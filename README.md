@@ -45,9 +45,11 @@ The same process applies for v2 and v3.
 `pad_token_label_id=0`, and by default, it uses v3.  
 The loss is computed as follows, adding the negative log-likelihood of a sequence of tags given some emission scores from the Linear-chain CRF:  
 ![](https://github.com/WillongWang/Knowledge_Graph_pipeline-NER-RE-CR-EL-KGAT/blob/main/g.png)  
+
 $$
 \boxed{- \log P(y_1, \dots, y_n \mid x) = - \left( h(y_1; x) + \sum_{k=1}^{n-1} g(y_k, y_{k+1}) + h(y_{k+1}; x) \right) + \log Z(x)}
 $$  
+
 Where $Z(x)$ is the normalizer.
 
 In the package `torchcrf`, pseudocode for `_compute_normalizer`:  
@@ -57,13 +59,16 @@ for i in range(1,l):
  s = ( logits[0] + start_transitions (shape t) ).unsqueeze(2) + transitions (shape (t,t)) + logits[i].unsqueeze(1)
 logsumexp( (logsumexp(s,dim=1) (shape (b,t)) + end_transitions (shape t) ),dim=1)
 ```  
-This differs from the original equation. Let the normalizer at time step t be denoted as Z_t, and divide it into k components (corresponding to the number of label classes).  
+This differs from the original equation. Let the normalizer at time step t be denoted as Z_t, and divide it into k components (corresponding to the number of label classes). 
+
 $$
-Z_t = Z_t^{(1)} + Z_t^{(2)} + \dots + Z_t^{(k)}  
+\boxed{Z_t = Z_t^{(1)} + Z_t^{(2)} + \dots + Z_t^{(k)}  
 \mathbf{Z_{t+1}} = \begin{pmatrix} Z_{t+1}^{(1)} \\ \vdots \\ Z_{t+1}^{(k)} \end{pmatrix}  
 H(y_{t+1} | x) = \begin{pmatrix} e^{h_{t+1}(1 \mid x)} \\ \vdots \\ e^{h_{t+1}(k \mid x)} \end{pmatrix}  
 G matrix: G_{ij} = e^{g(y_i,y_j)}  
-Z_{t+1} = Z_t G \otimes H(y_{t+1} \mid x)  
+Z_{t+1} = Z_t G \otimes H(y_{t+1} \mid x)}
+$$
+
 `_viterbi_decode` implements the Viterbi algorithm, involving dynamic programming, ensuring global optimality.
 
 #### BERT+Biaffine
@@ -202,7 +207,7 @@ In `datasets/amazon-book`, `kg_final.txt` contains Knowledge Graph triples per l
 
 For KG embedding, the TransR model is used:  
 $$
-g(h, r, t) = \| W_r e_h + e_r - W_r e_t \|^2
+\boxed{g(h, r, t) = \| W_r e_h + e_r - W_r e_t \|^2}
 $$
 
 Requirements:  
