@@ -47,7 +47,7 @@ The loss is computed as follows, adding the negative log-likelihood of a sequenc
 ![](https://github.com/WillongWang/Knowledge_Graph_pipeline-NER-RE-CR-EL-KGAT/blob/main/g.png)  
 
 $$
-- \log P(y_1, \dots, y_n \mid x) = - \left( h(y_1; x) + \sum_{k=1}^{n-1} g(y_k, y_{k+1}) + h(y_{k+1}; x) \right) + \log Z(x)
+\boxed{- \log P(y_1, \dots, y_n \mid x) = - \left( h(y_1; x) + \sum_{k=1}^{n-1} g(y_k, y_{k+1}) + h(y_{k+1}; x) \right) + \log Z(x)}
 $$ 
 
 Where $Z(x)$ is the normalizer.
