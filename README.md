@@ -45,11 +45,9 @@ The same process applies for v2 and v3.
 `pad_token_label_id=0`, and by default, it uses v3.  
 The loss is computed as follows, adding the negative log-likelihood of a sequence of tags given some emission scores from the Linear-chain CRF:  
 ![](https://github.com/WillongWang/Knowledge_Graph_pipeline-NER-RE-CR-EL-KGAT/blob/main/g.png)  
-
 $$
 \boxed{- \log P(y_1, \dots, y_n \mid x) = - \left( h(y_1; x) + \sum_{k=1}^{n-1} g(y_k, y_{k+1}) + h(y_{k+1}; x) \right) + \log Z(x)}
-$$ 
-
+$$  
 Where $Z(x)$ is the normalizer.
 
 In the package `torchcrf`, pseudocode for `_compute_normalizer`:  
