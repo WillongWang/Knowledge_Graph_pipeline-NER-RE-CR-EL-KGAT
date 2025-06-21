@@ -59,7 +59,7 @@ for i in range(1,l):
  s = ( logits[0] + start_transitions (shape t) ).unsqueeze(2) + transitions (shape (t,t)) + logits[i].unsqueeze(1)
 logsumexp( (logsumexp(s,dim=1) (shape (b,t)) + end_transitions (shape t) ),dim=1)
 ```  
-This differs from the original equation. Let the normalizer at time step t be denoted as Z_t, and divide it into k components (corresponding to the number of label classes). 
+This differs from the original equation. Let the normalizer at time step t be denoted as Z_t, and divide it into k components (corresponding to the number of label classes):
 
 $$
 \boxed{Z_t = Z_t^{(1)} + Z_t^{(2)} + \dots + Z_t^{(k)}}
