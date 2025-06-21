@@ -10,7 +10,7 @@ Testing Environment: PyTorch 1.10.0, Python 3.8 (Ubuntu 20.04), CUDA 11.3
 ## Named Entity Recognition   
 In `/datasets`:
 `conll03`'s each dictionary item's span_position contains the start_position and end_position of the entity in the context. The label files include `bio_labels.txt` (9 labels), `crf_bio_labels.txt` (CRF), `biaffine_labels.txt`; "impossible" indicates whether an entity is present in the context.  
-`kgclue`'s `qa_data` (from [KgCLUE](https://github.com/CLUEbenchmark/KgCLUE)) converted to NER data (via NERdata.py) becomes `ner_data`; in `qa_data`; each line in `train.json` contains an answer in the format: entity ||| relation ||| entity, where all elements appear in the corresponding question (in Chinese); `ner_data` also contains three txt files.
+`kgclue`'s `qa_data` (from [KgCLUE](https://github.com/CLUEbenchmark/KgCLUE)) converted to NER data (via NERdata.py) becomes `ner_data`; in `qa_data`, each line in `train.json` contains an answer in the format: entity ||| relation ||| entity, where all elements appear in the corresponding question (in Chinese); `ner_data` also contains three txt files.
 
 
 ### BERT subword tokenizer three approaches  
