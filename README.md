@@ -93,7 +93,7 @@ F1 scores are in `results/conll03/results_1224.md`, `results/kgclue/results_1224
 
 
 ## Relation Extraction
-The `data/semeval10` dataset is derived by [OpenNRE](https://github.com/thunlp/OpenNRE), each data sample is a dictionary containing:  
+The `data/semeval10` dataset is derived by [OpenNRE](https://github.com/thunlp/OpenNRE), each data sample is a dictionary containing: 
 - `token`: tokenized sentence text  
 - `h` (head entity) and `t` (tail entity): each with `name` and `position`  
 - `relation`: one of 19 predefined classes (`semeval_rel2id.json`)  
