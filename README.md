@@ -62,10 +62,16 @@ logsumexp( (logsumexp(s,dim=1) (shape (b,t)) + end_transitions (shape t) ),dim=1
 This differs from the original equation. Let the normalizer at time step t be denoted as Z_t, and divide it into k components (corresponding to the number of label classes). 
 
 $$
-\boxed{Z_t = Z_t^{(1)} + Z_t^{(2)} + \dots + Z_t^{(k)}  
-\mathbf{Z_{t+1}} = \begin{pmatrix} Z_{t+1}^{(1)} \\ \vdots \\ Z_{t+1}^{(k)} \end{pmatrix}  
-H(y_{t+1} | x) = \begin{pmatrix} e^{h_{t+1}(1 \mid x)} \\ \vdots \\ e^{h_{t+1}(k \mid x)} \end{pmatrix}  
-G matrix: G_{ij} = e^{g(y_i,y_j)}  
+\boxed{Z_t = Z_t^{(1)} + Z_t^{(2)} + \dots + Z_t^{(k)}}
+$$
+
+$$
+\boxed{\mathbf{Z_{t+1}} = \begin{pmatrix} Z_{t+1}^{(1)} \\ \vdots \\ Z_{t+1}^{(k)} \end{pmatrix}  
+H(y_{t+1} | x) = \begin{pmatrix} e^{h_{t+1}(1 \mid x)} \\ \vdots \\ e^{h_{t+1}(k \mid x)} \end{pmatrix}}  
+$$
+
+$$
+\boxed{G matrix: G_{ij} = e^{g(y_i,y_j)}  
 Z_{t+1} = Z_t G \otimes H(y_{t+1} \mid x)}
 $$
 
@@ -206,6 +212,7 @@ This is PyTorch & DGL implementation for the paper [KGAT: Knowledge Graph Attent
 In `datasets/amazon-book`, `kg_final.txt` contains Knowledge Graph triples per line with format (t (top), r, h (head)); `train.txt` and `test.txt` contain lines representing user ID paired with the product IDs they purchased.
 
 For KG embedding, the TransR model is used:  
+
 $$
 \boxed{g(h, r, t) = \| W_r e_h + e_r - W_r e_t \|^2}
 $$
