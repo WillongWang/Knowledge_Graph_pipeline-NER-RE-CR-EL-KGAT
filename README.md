@@ -15,13 +15,13 @@ In `/datasets`:
 
 ### BERT subword tokenizer three approaches  
     # A-word --> BERT tokenize --> A_1, A_2, A_3: B-PER, O, O; (sub_token_label_scheme == "v2")  
-    # A-word --> BERT tokenize --> A_1, A_2, A_3: B-PER, PAD, PAD; (sub_token_label_scheme == "v3", loss ignore [PAD])  
+    # A-word --> BERT tokenize --> A_1, A_2, A_3: B-PER, PAD, PAD; (sub_token_label_scheme == "v3", loss ignore `[PAD]`)  
     # A-word --> BERT tokenize --> A_1, A_2, A_3: B-PER, I-PER, I-PER; (sub_token_label_scheme == "v1")  
 
 
 ### How to Run  
 Three models are used: BERT+MLP, BERT+CRF (Conditional random fields), BERT+Biaffine (the latter two use [chinese-bert-wwm-ext](https://huggingface.co/hfl/chinese-bert-wwm-ext/tree/main), which should be downloaded to `/resources/chinese_bert_wwm_ext`)  
-The `pad_token_label_id` (label ids for [PAD]) is set to `--ignore_index`, and `--is_flat_ner` is used (no Nested NER).  
+The `pad_token_label_id` (label ids for `[PAD]`) is set to `--ignore_index`, and `--is_flat_ner` is used (no Nested NER).  
 ```
 pip install filelock regex seqeval pytorch-crf transformers osa
 cd Named_Entity_Recognition
@@ -35,7 +35,7 @@ Check errors/logs with:
 ```
 cat experiments/MLP/logs/bert_MLP_conll03_101001.log
 ```  
-The input consists of tokenized input's input_ids and label ids ([PAD] defaults to -100), producing logits for each token over 9 label classes to compute the loss.  
+The input consists of tokenized input's input_ids and label ids (`[PAD]` defaults to -100), producing logits for each token over 9 label classes to compute the loss.  
 The same process applies for v2 and v3.
 
 #### BERT+CRF  
@@ -59,7 +59,7 @@ for i in range(1,l):
  s = ( logits[0] + start_transitions (shape t) ).unsqueeze(2) + transitions (shape (t,t)) + logits[i].unsqueeze(1)
 logsumexp( (logsumexp(s,dim=1) (shape (b,t)) + end_transitions (shape t) ),dim=1)
 ```  
-This differs from the original equation. Let the normalizer at time step t be denoted as Z_t, and divide it into k components (corresponding to the number of label classes):
+This differs from the original equation. Let the normalizer at time step t be denoted as $Z_t$, and divide it into k components (corresponding to the number of label classes):
 
 $$
 \boxed{Z_t = Z_t^{(1)} + Z_t^{(2)} + \dots + Z_t^{(k)}}
