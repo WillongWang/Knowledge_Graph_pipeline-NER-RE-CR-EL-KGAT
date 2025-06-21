@@ -69,7 +69,7 @@ Z_{t+1} = Z_t G \otimes H(y_{t+1} | x)
 cat experiments/biaffine/logs/bert_biaffine_kgclue_110901.log
 ```  
 `pad_token_label_id=0`, `tmp_label` is represented by the Biaffine matrix: ![](https://github.com/WillongWang/Knowledge_Graph_pipeline-NER-RE-CR-EL-KGAT/blob/main/gg.png)  
-This 2D space represents an entity, where the first dimension represents the start token s, and the second dimension represents the end token e. A tuple (s, e) corresponds to a span, and the values in the tuple represent the label.  
+This 2D space represents entities, where the first dimension represents the start token s, and the second dimension represents the end token e. A tuple (s, e) corresponds to a span, and the values in the tuple represent the label.  
 The `label_ids_biaffine` is computed as:  
 ```
 label_sparse = scipy.sparse.coo_matrix(tmp_label, dtype=np.int_)
