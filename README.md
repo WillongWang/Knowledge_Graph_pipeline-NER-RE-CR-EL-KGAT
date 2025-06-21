@@ -15,7 +15,7 @@ In `/datasets`:
 
 ### BERT subword tokenizer three approaches  
     # A-word --> BERT tokenize --> A_1, A_2, A_3: B-PER, O, O; (sub_token_label_scheme == "v2")  
-    # A-word --> BERT tokenize --> A_1, A_2, A_3: B-PER, PAD, PAD; (sub_token_label_scheme == "v3", loss ignore `[PAD]`)  
+    # A-word --> BERT tokenize --> A_1, A_2, A_3: B-PER, PAD, PAD; (sub_token_label_scheme == "v3", loss ignore [PAD])  
     # A-word --> BERT tokenize --> A_1, A_2, A_3: B-PER, I-PER, I-PER; (sub_token_label_scheme == "v1")  
 
 
@@ -177,7 +177,7 @@ elif self.args.use_cls_vector and not self.args.use_entity_vector:
 
 
 
-## Entity_Linking  
+## Entity Linking  
 This module performs alias matching and name disambiguation. The model is also based on [chinese-bert-wwm-ext](https://huggingface.co/hfl/chinese-bert-wwm-ext/tree/main), which should be downloaded to `Entity_Linking/lesson6/resources/chinese_bert_wwm_ext`.
 
 CHIP-CDN dataset is from [CBLUE](https://tianchi.aliyun.com/dataset/95414), refer to `Entity_Linking/lesson6/datasets/CBLUE_datasets/CHIP-CDN/CHIP-CDN/README.txt` for details. For`Entity_Linking/lesson6/datasets/CBLUE_datasets/CHIP-CDN/CHIP-CDN/CHIP-CDN_train.json`, each entry contains a `text` (can have multiple words) and corresponding standardized medical term (entity).
