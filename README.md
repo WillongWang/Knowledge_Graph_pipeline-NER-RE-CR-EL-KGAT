@@ -45,8 +45,10 @@ The same process applies for v2 and v3.
 `pad_token_label_id=0`, and by default, it uses v3.  
 The loss is computed as follows, adding the negative log-likelihood of a sequence of tags given some emission scores from the Linear-chain CRF:  
 ![](https://github.com/WillongWang/Knowledge_Graph_pipeline-NER-RE-CR-EL-KGAT/blob/main/g.png)  
-- \log P(y_1, \dots, y_n | x) = - \left( h(y_1; x) + \sum_{k=1}^{n-1} g(y_k, y_{k+1}) + h(y_{k+1}; x) \right) + \log Z(x)  
-Where Z(x) is the normalizer.
+$$
+- \log P(y_1, \dots, y_n \mid x) = - \left( h(y_1; x) + \sum_{k=1}^{n-1} g(y_k, y_{k+1}) + h(y_{k+1}; x) \right) + \log Z(x)
+$$   
+Where $Z(x)$ is the normalizer.
 
 In the package `torchcrf`, pseudocode for `_compute_normalizer`:  
 ```
@@ -56,11 +58,12 @@ for i in range(1,l):
 logsumexp( (logsumexp(s,dim=1) (shape (b,t)) + end_transitions (shape t) ),dim=1)
 ```  
 This differs from the original equation. Let the normalizer at time step t be denoted as Z_t, and divide it into k components (corresponding to the number of label classes).  
+$$
 Z_t = Z_t^{(1)} + Z_t^{(2)} + \dots + Z_t^{(k)}  
 \mathbf{Z_{t+1}} = \begin{pmatrix} Z_{t+1}^{(1)} \\ \vdots \\ Z_{t+1}^{(k)} \end{pmatrix}  
-H(y_{t+1} | x) = \begin{pmatrix} e^{h_{t+1}(1|x)} \\ \vdots \\ e^{h_{t+1}(k|x)} \end{pmatrix}  
-G matrix G_ij = e^{g(y_i,y_j)}  
-Z_{t+1} = Z_t G \otimes H(y_{t+1} | x)  
+H(y_{t+1} | x) = \begin{pmatrix} e^{h_{t+1}(1 \mid x)} \\ \vdots \\ e^{h_{t+1}(k \mid x)} \end{pmatrix}  
+G matrix: G_{ij} = e^{g(y_i,y_j)}  
+Z_{t+1} = Z_t G \otimes H(y_{t+1} \mid x)  
 `_viterbi_decode` implements the Viterbi algorithm, involving dynamic programming, ensuring global optimality.
 
 #### BERT+Biaffine
@@ -93,18 +96,20 @@ F1 scores are in `results/conll03/results_1224.md`, `results/kgclue/results_1224
 
 
 ## Relation Extraction
-The `data/semeval10` dataset is derived by [OpenNRE](https://github.com/thunlp/OpenNRE), each data sample is a dictionary containing: 
+The `data/semeval10` dataset is derived by [OpenNRE](https://github.com/thunlp/OpenNRE), each data sample is a dictionary containing:
 - `token`: tokenized sentence text  
 - `h` (head entity) and `t` (tail entity): each with `name` and `position`  
 - `relation`: one of 19 predefined classes (`semeval_rel2id.json`)  
-The model outputs 19 logits corresponding to the 19 relation classes, and computes the loss based on the ground truth label.  
+The model outputs 19 logits corresponding to the 19 relation classes, and computes the loss based on the ground truth label.
+
 Coreference Resolution can be modeled similarly as a relation extraction task.  
 Model architecture depicted in [Matching the Blanks: Distributional Similarity for Relation Learning](https://aclanthology.org/P19-1279.pdf):
 ![ggg.png](https://github.com/WillongWang/Knowledge_Graph_pipeline-NER-RE-CR-EL-KGAT/blob/main/ggg.png)  
-The code implementation via `--span_identification_method`:  
+The code implementation via `--span_identification_method`:
 - `v1`: No modification
 - `v2`: Add entity markers  
-- `v3`: Replace with entity markers  
+- `v3`: Replace with entity markers
+
 Specifications in `data_loader.py`'s function `convert_examples_to_features`, v2:  
 ```
 head_entity_start_token="[unused0]", # BERT dictionary
@@ -146,15 +151,15 @@ result: re_acc = 0.8490712074303406
 
 Feature construction in `model/modeling_bert.py`'s function `forward`:  
 ```
-        if self.args.use_cls_vector and self.args.use_entity_vector:
-            features = torch.cat([pooled_output, head_hidden, tail_hidden], 1)
-        elif not self.args.use_cls_vector and self.args.use_entity_vector:
-            if self.args.include_nli_ops:
-             features = torch.cat([head_hidden, tail_hidden, head_hidden*tail_hidden, head_hidden-tail_hidden], 1)
-            else:
-             features = torch.cat([head_hidden, tail_hidden], 1)
-        elif self.args.use_cls_vector and not self.args.use_entity_vector:
-            features = pooled_output
+if self.args.use_cls_vector and self.args.use_entity_vector:
+    features = torch.cat([pooled_output, head_hidden, tail_hidden], 1)
+elif not self.args.use_cls_vector and self.args.use_entity_vector:
+    if self.args.include_nli_ops:
+     features = torch.cat([head_hidden, tail_hidden, head_hidden*tail_hidden, head_hidden-tail_hidden], 1)
+    else:
+     features = torch.cat([head_hidden, tail_hidden], 1)
+elif self.args.use_cls_vector and not self.args.use_entity_vector:
+    features = pooled_output
 ```  
 `--include_nli_ops` is inspired by Natural Language Inference (NLI) design. For the BERT representations of text_a and text_b (denoted as vectors a and b), the combined feature is constructed as [a, b, a * b, a - b].
 
@@ -178,14 +183,14 @@ Fine-tune the pretrained BERT model (BertForSequenceClassification)
 ```
 python DynaBERT/run_glue.py --seed 11901 --model_type bert --task_name cdn --do_train --data_dir datasets/CBLUE_datasets/CHIP-CDN/training_data_0120 --model_dir resources/chinese_bert_wwm_ext --output_dir experiments/outputs/bert_cdn_11901_finetuning --max_seq_length 48 --learning_rate 2e-5 --warmup_steps 300 --per_gpu_train_batch_size 256 --per_gpu_eval_batch_size 256 --num_train_epochs 5 --training_phase finetuning --evaluate_during_training True --logging_steps 200
 ```  
-The model input consists of input_ids for two sentences per line. The [CLS] token representation is processed by the pooler and classifier to produce two logits, which are then used to compute the loss.
+The model input consists of input_ids for two sentences per line. The `[CLS]` token representation is processed by the pooler and classifier to produce two logits, which are then used to compute the loss.
 
 **Step 2**  
 Test on the CHIP-CDN dev set
 ```
 python eval_el.py --model_type bert --task_name cdn --data_dir datasets/CBLUE_datasets/CHIP-CDN/CHIP-CDN/CHIP-CDN_dev.json --max_seq_length 48 --per_gpu_eval_batch_size 128 --model_dir experiments/outputs/bert_cdn_11901_finetuning --output_dir experiments/outputs/bert_cdn_11901_finetuning/dev_predicted_results.txt
 ```  
-First, Elasticsearch recalls the `topk` (default 128) entities matching the "text" as candidates. Each candidate entity is paired with the text and fed into the model. If the logit for label 1 exceeds a given threshold (0.9, 0.95, 0.98, 0.99, 0.995), the entity_name is appended to the predictions. Precision, recall, and F1 scores are then calculated.
+First, Elasticsearch recalls the `topk` (default 128) entities matching the "text" as candidates. Each candidate entity is paired with the text and fed into the model. If the logit for label 1 exceeds a given threshold (0.9, 0.95, 0.98, 0.99, 0.995), the `entity_name` is appended to the predictions. Precision, recall, and F1 scores are then calculated.
 
 Evaluation results are saved in `experiments/outputs/bert_cdn_11901_finetuning` and the scores are not high.
 
@@ -196,7 +201,9 @@ This is PyTorch & DGL implementation for the paper [KGAT: Knowledge Graph Attent
 In `datasets/amazon-book`, `kg_final.txt` contains Knowledge Graph triples per line with format (t (top), r, h (head)); `train.txt` and `test.txt` contain lines representing user ID paired with the product IDs they purchased.
 
 For KG embedding, the TransR model is used:  
-g(h, r, t) = ||W_r e_h + e_r - W_r e_t||^2
+$$
+g(h, r, t) = \| W_r e_h + e_r - W_r e_t \|^2
+$$
 
 Requirements:  
 ```
