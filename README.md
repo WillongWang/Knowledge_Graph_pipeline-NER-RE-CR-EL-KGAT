@@ -66,12 +66,13 @@ $$
 $$
 
 $$
-\boxed{\mathbf{Z_{t+1}} = \begin{pmatrix} Z_{t+1}^{(1)} \\ \vdots \\ Z_{t+1}^{(k)} \end{pmatrix}  
-H(y_{t+1} | x) = \begin{pmatrix} e^{h_{t+1}(1 \mid x)} \\ \vdots \\ e^{h_{t+1}(k \mid x)} \end{pmatrix}}  
+\boxed{\mathbf{Z_{t+1}} = \begin{pmatrix} Z_{t+1}^{(1)} \\ \vdots \\ Z_{t+1}^{(k)} \end{pmatrix}, 
+H(y_{t+1} | x) = \begin{pmatrix} e^{h_{t+1}(1 \mid x)} \\ \vdots \\ e^{h_{t+1}(k \mid x)} \end{pmatrix}, 
+G matrix: G_{ij} = e^{g(y_i,y_j)}}
 $$
 
 $$
-\boxed{G matrix: G_{ij} = e^{g(y_i,y_j)}  
+\boxed{
 Z_{t+1} = Z_t G \otimes H(y_{t+1} \mid x)}
 $$
 
